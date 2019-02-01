@@ -1,14 +1,32 @@
 <!DOCTYPE html>
 <html>
     <body>
+        <input type="text" id="message" placeholder="Message">
+        <button>Send</button>
+        <div id="chat"></div>
         
     </body>
+    <script src="blockly_compressed.js"></script>
+    <script src="blocks_compressed.js"></script>
     <script src="/socket.io.js"></script>
     <script>
+        
         var socket = io.connect('https://socketio-patrickwang3.c9users.io/');
         socket.on('test', function (data) {
-            console.log(data);
+            console.log()
         });
-        
-    </script> 
+        socket.on('Send Message', function (data) {
+            addMessage(data.message);
+        })
+        document.querySelector('button').addEventListener('click', function() {
+            console.log('Send Message');
+            var message = document.getElementById("message").value
+            // console.log(document.getElementById("message"))
+            addMessage(message);
+            socket.emit('Send Message', {message: message});
+        });
+        function addMessage(message) {
+            document.getElementById("chat").innerHTML += `<div>${message}</div>`;
+        }
+    </script>  
 </html>

@@ -20,5 +20,13 @@ io.on('connection', function (socket) {
   socket.on('Update Blocks', function (data) {
     console.log();
   });
+  socket.on('Client Test', function (data) {
+    console.log(data);
+    socket.broadcast.emit('test', data);
+  })
+  socket.on('Send Message', function (data) {
+    console.log(data);
+    socket.broadcast.emit('Send Message', data);
+  })
   console.log("Connection");
 });
