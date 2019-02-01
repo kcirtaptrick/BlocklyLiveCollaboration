@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/kcirtaptrick/BlocklyLiveCollaboration/issues"
   },
-  "homepage": "https://github.com/kcirtaptrick/BlocklyLiveCollaboration#readme"
+  "homepage": "https://github.com/kcirtaptrick/BlocklyLiveCollaboration#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "pug": "^2.0.3",
+    "socket.io": "^2.2.0"
+  }
 }
