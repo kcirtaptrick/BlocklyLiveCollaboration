@@ -4,13 +4,33 @@
         <input type="text" id="message" placeholder="Message">
         <button>Send</button>
         <div id="chat"></div>
-        
+        <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+        <xml id="toolbox" style="display: none">
+          <block type="controls_if"></block>
+          <block type="controls_repeat_ext"></block>
+          <block type="logic_compare"></block>
+          <block type="math_number"></block>
+          <block type="math_arithmetic"></block>
+          <block type="text"></block>
+          <block type="text_print"></block>
+        </xml>
     </body>
-    <script src="blockly_compressed.js"></script>
-    <script src="blocks_compressed.js"></script>
+    <script src="/blockly/blockly_compressed.js"></script>
+    <script src="/blockly/blocks_compressed.js"></script>
+    <script src="/blockly/msg/js/en.js"></script>
     <script src="/socket.io.js"></script>
     <script>
-        
+        var workspace = Blockly.inject('blocklyDiv',
+          {toolbox: document.getElementById('toolbox')});
+        workspace.addChangeListener((e) => {
+            if(e.type == Blockly.Events.BLOCK_MOVE) {
+                socket.emit('Move Block', e);
+            }
+        });
+        socket.on('Move Block', function () {
+            
+        })
+          
         var socket = io.connect('https://socketio-patrickwang3.c9users.io/');
         socket.on('test', function (data) {
             console.log()
@@ -29,4 +49,5 @@
             document.getElementById("chat").innerHTML += `<div>${message}</div>`;
         }
     </script>  
+    
 </html>
