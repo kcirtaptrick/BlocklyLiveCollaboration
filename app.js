@@ -14,15 +14,17 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
   socket.emit('test', {test: 'Works'})
-  socket.on('Move Block', function(data) {
-    socket.broadcast.emit('Move Block', data);
+  socket.on('Blockly Event', function(data) {
+    console.log(data);
+    socket.broadcast.emit('Blockly Event', data); 
   })
-  socket.on('Update Text', function(data) {
+  // socket.on('Update Text', function(data) {
     
-  });
+  // });
   socket.on('Update Workspace', function (data) {
     console.log();
   });
+  
   socket.on('Client Test', function (data) {
     console.log(data);
     socket.broadcast.emit('test', data);

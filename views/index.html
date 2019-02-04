@@ -2,9 +2,10 @@
 <html>
     <body>
         <input type="text" id="message" placeholder="Message">
-        <button>Send</button>
+        <button id='send'>Send</button>
         <div id="chat"></div>
         <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+        <button id='test'>Log blocks in workspace</button>
         <xml id="toolbox" style="display: none">
           <block type="controls_if"></block>
           <block type="controls_repeat_ext"></block>
@@ -20,34 +21,53 @@
     <script src="/blockly/msg/js/en.js"></script>
     <script src="/socket.io.js"></script>
     <script>
+    
+        var socket = io.connect('https://socketio-patrickwang3.c9users.io/');
+        var lastEventRecieved = {};
+        var eventFromServer = false;
         var workspace = Blockly.inject('blocklyDiv',
           {toolbox: document.getElementById('toolbox')});
         workspace.addChangeListener((e) => {
-            if(e.type == Blockly.Events.BLOCK_MOVE) {
-                socket.emit('Move Block', e);
+            if(e.type == Blockly.Events.UI) {
+                return;
             }
+            var eJson = e.toJson();
+            if (eventFromServer) {
+                eventFromServer = false;
+                return;
+            } 
+            socket.emit('Blockly Event', eJson);
+            console.log('Blockly Event, event data sent: ');
+            console.log(eJson);
         });
-        socket.on('Move Block', function () {
-            
+        socket.on('Blockly Event', function (data) {
+            console.log('Blockly Event, event data recieved: ')
+            console.log(data);
+            Blockly.Events.fromJson(data, workspace).run(true);
+            lastEventRecieved = data;
+            eventFromServer = true;
         })
           
-        var socket = io.connect('https://socketio-patrickwang3.c9users.io/');
         socket.on('test', function (data) {
             console.log()
         });
         socket.on('Send Message', function (data) {
             addMessage(data.message);
         })
-        document.querySelector('button').addEventListener('click', function() {
-            console.log('Send Message');
+        document.getElementById('test').addEventListener('click', () => {
+          console.log(Blockly.getMainWorkspace().getTopBlocks());
+        })
+        document.getElementById('send').addEventListener('click', function() {
+            
             var message = document.getElementById("message").value
             // console.log(document.getElementById("message"))
             addMessage(message);
             socket.emit('Send Message', {message: message});
+            console.log(`Message Sent: ${message}`);
         });
         function addMessage(message) {
             document.getElementById("chat").innerHTML += `<div>${message}</div>`;
         }
     </script>  
     
-</html>
+</html> 
